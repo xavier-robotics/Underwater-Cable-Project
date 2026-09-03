@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "uw-camera-calibration"
+version = "1.1.0"
+description = "In-medium intrinsics and mechanical extrinsics for underwater cameras"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24,<2",
+  "opencv-python-headless>=4.8,<5",
+  "PyYAML>=6.0",
+  "scipy>=1.10",
+]
+
+[project.scripts]
+camera_calibration = "camera_calibration.cli:main"
+camera_capture = "camera_calibration.capture_cli:main"
+
+[tool.setuptools.packages.find]
+include = ["camera_calibration*"]

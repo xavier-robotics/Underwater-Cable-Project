@@ -1,0 +1,192 @@
+nouns:
+  - cable
+  - pipe
+  - beam
+  - hose
+  - tube
+
+localization_prompts:
+  - pipe
+  - cable
+  - beam
+  - hose
+  - tube
+  - underwater cable
+  - submarine cable
+  - underwater pipe
+  - black cable
+  - black pipe
+  - rubber hose
+  - flexible hose
+  - cylindrical object
+  - cylindrical structure
+
+damage_templates:
+  - damaged {noun}
+  - broken {noun}
+  - cut {noun}
+  - cracked {noun}
+  - split {noun}
+  - "{noun} surface defect"
+
+damage_additional_prompts:
+  - cable with exposed wires
+  - cable with missing sheath
+  - cable with damaged sheath
+  - cable with torn sheath
+  - exposed metal on cable
+  - exposed armor on cable
+  - exposed conductor on cable
+  - damaged cable jacket
+  - missing cable jacket
+  - pipe with exposed metal
+  - pipe with missing outer layer
+  - pipe with damaged surface
+  - damaged pipe coating
+  - hose with exposed reinforcement
+  - hose with torn outer layer
+  - damaged outer layer
+  - exposed metal section
+  - exposed wire section
+  - missing outer layer
+  - surface damage
+
+# Prompts in one group describe the same evidence concept. During deployment
+# the group takes a maximum, so several synonyms matching one sticker count as
+# one piece of evidence rather than several independent votes.
+damage_candidate_groups:
+  semantic_damage:
+    - surface damage
+    - cable with damaged sheath
+    - damaged cable jacket
+  sheath_loss:
+    - missing black outer sheath
+    - peeled cable jacket
+    - torn outer coating
+    - exposed inner layer
+  metal_exposure:
+    - silver metallic patch on black cable
+    - exposed metallic layer on cable
+    - bright metal patch on black pipe
+    - reflective metal area on cable
+    - silver patch on black cable
+    - metal patch on black pipe
+    - silver patch
+    - metallic patch
+  structural_damage:
+    - cut cable sheath
+    - cracked cable jacket
+    - split outer sheath
+    - broken cable jacket
+
+deployment_candidates:
+  validated_balanced:
+    semantic_damage:
+      - surface damage
+    metal_exposure:
+      - metal patch on black pipe
+    structural_damage:
+      - broken cable jacket
+  visual_structural:
+    metal_exposure:
+      - metal patch on black pipe
+    structural_damage:
+      - broken cable jacket
+  single_visual:
+    metal_exposure:
+      - silver patch
+  compact_balanced:
+    semantic_damage:
+      - cable with damaged sheath
+    metal_exposure:
+      - silver patch
+    structural_damage:
+      - broken cable jacket
+  robust_balanced:
+    semantic_damage:
+      - surface damage
+      - cable with damaged sheath
+    sheath_loss:
+      - torn outer coating
+    metal_exposure:
+      - silver patch
+      - metal patch on black pipe
+    structural_damage:
+      - broken cable jacket
+  simulation_focused:
+    semantic_damage:
+      - cable with damaged sheath
+    metal_exposure:
+      - silver patch
+      - metal patch on black pipe
+      - silver metallic patch on black cable
+  physical_damage_focused:
+    semantic_damage:
+      - surface damage
+      - cable with damaged sheath
+    sheath_loss:
+      - missing black outer sheath
+      - peeled cable jacket
+      - torn outer coating
+    structural_damage:
+      - broken cable jacket
+      - cracked cable jacket
+
+intact_templates:
+  - intact {noun}
+  - undamaged {noun}
+  - smooth {noun} surface
+  - normal {noun}
+
+exposed_templates:
+  - "{noun} resting on pool floor"
+  - "{noun} lying on pool floor"
+  - "{noun} touching pool floor"
+
+suspended_templates:
+  - suspended {noun}
+  - hanging {noun}
+  - "{noun} above pool floor"
+
+search:
+  top_individual_damage_prompts: 18
+  max_damage_prompt_count: 4
+  max_reported_combinations: 25
+
+# This is the deliberately selected robust configuration. It is not simply
+# the highest-scoring combination on eight samples: semantic clarity, zero
+# false-positive frames and support on at least two frames of every damaged
+# sample are also required.
+selected:
+  localization_prompt: pipe
+  damage_positive_prompts:
+    - surface damage
+    - metal patch on black pipe
+    - broken cable jacket
+  damage_prompt_groups:
+    semantic_damage:
+      - surface damage
+    metal_exposure:
+      - metal patch on black pipe
+    structural_damage:
+      - broken cable jacket
+  intact_prompts:
+    - intact cable
+    - undamaged cable
+    - smooth cable surface
+  exposed_prompts:
+    - cable resting on pool floor
+    - cable lying on pool floor
+    - cable touching pool floor
+  suspended_prompts:
+    - suspended cable
+    - hanging cable
+    - cable above pool floor
+  rationale:
+    - pipe is specific and stable; generic cylindrical prompts produce larger masks
+    - metal patch on black pipe matches the current metallic-sticker simulation
+    - broken cable jacket preserves a physical real-damage description
+    - synonyms are maximized inside groups and cannot duplicate consensus votes
+    - the selected groups have zero false-positive frames on current intact samples
+    - every current damaged sample has supporting evidence on at least two frames
+    - cable position prompts are semantically correct and tied for the best result

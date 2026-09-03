@@ -1,0 +1,13 @@
+max_attempts: 1
+confidence_threshold: 0.65
+position_majority_threshold: 0.6
+clear_damage_threshold: 0.75
+retry_policy: none
+finalization_policy: best_effort
+cache_results: true
+agent_batch_size: 6
+
+rounds:
+  - max_frames_per_sample: 3
+    min_frames: 3
+    evidence_mode: contact-sheet

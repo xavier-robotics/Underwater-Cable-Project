@@ -1,0 +1,72 @@
+mode: extrinsic
+
+intrinsics_file: ../output/intrinsics/intrinsics.yaml
+
+frames:
+  base_frame: base_link
+  camera_mechanical_frame: camera_link
+  camera_frame: camera_optical_frame
+  target_frame: calibration_target
+  # Optional only when independently measured. This is T_camera_link_camera_optical:
+  # T_camera_link_camera_optical:
+  #   translation_m: [0.0, 0.0, 0.0]
+  #   quaternion_xyzw: [0.5, -0.5, 0.5, -0.5]
+
+target:
+  type: checkerboard
+  inner_corners_cols: 11
+  inner_corners_rows: 8
+  square_size_m: 0.04
+  target_origin: first_inner_corner
+
+datasets:
+  - name: pose_01
+    video: ../data/extrinsics/pose_01.mp4
+    frame_interval_sec: 0.5
+    T_base_target:
+      length_unit: metre
+      translation_m: [0.0, 0.0, 0.0]
+      quaternion_xyzw: [0.0, 0.0, 0.0, 1.0]
+
+  - name: pose_02
+    video: ../data/extrinsics/pose_02.mp4
+    frame_interval_sec: 0.5
+    T_base_target:
+      length_unit: metre
+      matrix:
+        - [1.0, 0.0, 0.0, 0.0]
+        - [0.0, 1.0, 0.0, 0.0]
+        - [0.0, 0.0, 1.0, 0.0]
+        - [0.0, 0.0, 0.0, 1.0]
+
+quality:
+  min_frames_per_dataset: 5
+  max_frames_per_dataset: 10
+  min_total_observations: 3
+  blur_threshold: 80
+  min_board_area_ratio: 0.005
+  duplicate_distance: 0.02
+
+outlier_rejection:
+  max_reprojection_error_px: 1.5
+  max_translation_residual_mm: 10.0
+  max_rotation_residual_deg: 1.0
+
+pnp_disambiguation:
+  translation_scale_mm: 10.0
+  rotation_scale_deg: 1.0
+  iterations: 8
+
+optimization:
+  enabled: true
+  robust_loss: huber
+  f_scale_px: 1.0
+  max_iterations: 200
+
+# Fill these from the mechanical envelope before production use.
+physical_bounds:
+  translation_min_m: [-1.0, -1.0, -1.0]
+  translation_max_m: [1.0, 1.0, 1.0]
+
+output:
+  directory: ../output/extrinsics

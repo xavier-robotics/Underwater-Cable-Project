@@ -1,0 +1,16 @@
+name: yoloe
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - ffmpeg
+  - pip:
+      - numpy==1.26.4
+      - opencv-python-headless==4.8.1.78
+      - setuptools==80.9.0
+      - pyyaml>=6.0
+      - pandas>=2.0
+      - matplotlib>=3.7
+      - tqdm>=4.66
+      - openai>=1.99

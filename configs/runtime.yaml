@@ -1,0 +1,22 @@
+input: /home/nvidia/DATA/UW/video
+output_dir: outputs/runtime
+
+method: opencv
+weights: null
+device: cpu
+
+imgsz: 1280
+conf: 0.25
+sample_stride: 1
+max_frames: null
+
+opencv:
+  resize_width: 1280
+  blur: 5
+  canny_low: 40
+  canny_high: 120
+  morph_kernel_w: 35
+  morph_kernel_h: 7
+  min_area: 1200
+  min_aspect: 3.0
+  max_boxes: 5

@@ -1,0 +1,44 @@
+mode: validation
+
+intrinsics_file: ../output/intrinsics/intrinsics.yaml
+extrinsics_file: ../output/extrinsics/extrinsics.yaml
+
+target:
+  type: checkerboard
+  inner_corners_cols: 11
+  inner_corners_rows: 8
+  square_size_m: 0.04
+  target_origin: first_inner_corner
+
+# Optional independent data sections. Remove a section only when doing a
+# result-file/runtime compatibility check without image validation.
+intrinsic_validation:
+  input:
+    type: video
+    path: ../data/validation/underwater_intrinsics.mp4
+    frame_interval_sec: 1.0
+  quality:
+    min_valid_frames: 3
+    max_valid_frames: 20
+    blur_threshold: 60
+  max_mean_reprojection_error_px: 2.0
+  max_corner_reprojection_error_px: 3.0
+
+extrinsic_validation:
+  max_mean_reprojection_error_px: 2.0
+  max_mean_translation_residual_mm: 15.0
+  max_mean_rotation_residual_deg: 1.5
+  physical_bounds:
+    translation_min_m: [-1.0, -1.0, -1.0]
+    translation_max_m: [1.0, 1.0, 1.0]
+  datasets:
+    - name: validation_pose
+      video: ../data/validation/extrinsic.mp4
+      min_valid_frames: 1
+      T_base_target:
+        length_unit: metre
+        translation_m: [0.0, 0.0, 0.0]
+        quaternion_xyzw: [0.0, 0.0, 0.0, 1.0]
+
+output:
+  directory: ../output/validation

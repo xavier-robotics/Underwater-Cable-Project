@@ -1,0 +1,38 @@
+# Human-provided midterm labels. Source filenames are
+# /home/nvidia/DATA/UW/mid/gt/sampleNN_CLASS.jpg.
+classes:
+  0: damaged
+  1: exposed_intact
+  2: suspended_intact
+
+samples:
+  0: 0
+  1: 0
+  2: 0
+  3: 0
+  4: 0
+  5: 1
+  6: 0
+  7: 0
+  8: 0
+  9: 1
+  10: 0
+  11: 0
+  12: 1
+  13: 0
+  14: 0
+  15: 1
+  16: 0
+  17: 0
+  18: 1
+  19: 1
+  20: 1
+  21: 0
+  22: 1
+  23: 0
+  24: 0
+  25: 1
+  26: 2
+  27: 2
+  28: 0
+  29: 1

@@ -1,0 +1,113 @@
+model:
+  checkpoint: ckpts/sam3/sam3.pt
+  device: auto
+  dtype: float32
+  confidence: 0.010
+  min_candidate_area_ratio: 0.0015
+  max_candidate_area_ratio: 0.85
+  min_mask_overlap: 0.20
+  min_reference_coverage: 0.008
+
+sampling:
+  max_frames_per_sample: 3
+
+classification:
+  # Suspension now has final-class priority. A suspended sample is class 2
+  # even when the damage branch also produces a positive response.
+  priority: suspended
+
+damage:
+  # Keep prompts short and let the spatial filters provide the cable context.
+  # The pool's simulated damage is represented by a metal patch.
+  decision_mode: direct_prompt_threshold
+  direct_positive_prompt_thresholds:
+    metal patch on pipe: 0.026
+  # A single still image needs a slightly higher floor. In a video, weaker
+  # evidence can instead be confirmed at a stable cable-axis location.
+  single_frame_direct_prompt_thresholds:
+    metal patch on pipe: 0.0275
+  direct_strong_prompt_thresholds:
+    metal patch on pipe: 0.05
+  # Do not require the mask center to lie inside the cable mask: real metal
+  # patches can create holes in that mask (sample14). Temporal consistency is
+  # the safer video-time filter for edge reflections.
+  direct_require_center_inside_reference: false
+  direct_borderline_min_matching_frames: 2
+  direct_borderline_axial_tolerance: 0.10
+  positive_prompts:
+    - metal patch on pipe
+    - damaged pipe
+    - torn pipe
+    - exposed material
+  positive_prompt_groups:
+    metal_damage:
+      - metal patch on pipe
+    pipe_damage:
+      - damaged pipe
+      - torn pipe
+    exposed_material:
+      - exposed material
+  # These objects are present in the pool experiment but are not cable damage.
+  # A positive region is suppressed only when a matching exclusion region
+  # overlaps it, so a separate metal damage marker remains valid.
+  exclusion_prompts:
+    - rope
+  intact_prompts:
+    - pipe
+  local_max_area_ratio: 0.35
+  positive_max_reference_coverage: 0.35
+  # White labels are attached only at the two physical ends. Positive regions
+  # in the outer 20% at either end never vote for damage; only the middle 60%
+  # of the pipe can provide damage evidence.
+  middle_axis_min_fraction: 0.20
+  middle_axis_max_fraction: 0.80
+  # Display masks covering most of the cable are usually the cable itself.
+  gallery_max_reference_coverage: 0.35
+  # Show every region that can trigger the direct damage decision.
+  gallery_min_score: 0.026
+  consensus_min_score: 0.120
+  consensus_bonus: 0.030
+  strong_prompt_score: 0.400
+  weak_prompt_score: 0.180
+  prompt_margin: 0.040
+  exclusion_min_score: 0.120
+  exclusion_score_ratio: 0.55
+  exclusion_overlap_coefficient: 0.30
+  max_suppressed_regions_report: 16
+  global_strong_score: 0.060
+  global_margin: 0.010
+  global_consensus_min_score: 0.020
+  min_global_supporting_prompts: 2
+  enable_global_strong: false
+  frame_score_threshold: 0.58
+  # Damage is recall-first: one valid middle-region hit is enough.
+  min_positive_frames: 1
+  prompt_weight: 0.92
+  visual_weight: 0.08
+  visual_component_scale: 0.025
+  visual_total_scale: 0.080
+
+position:
+  enabled: true
+  # Suspended samples have a long bright support rod near a cable endpoint and
+  # roughly perpendicular to the cable axis. This cue is extracted from the
+  # existing SAM3 cable mask with OpenCV, so it adds no model inference call.
+  support_decision_mode: geometry_only
+  support_prompts: []
+  support_geometry_score_threshold: 0.11
+  geometry_max_cable_thickness_ratio: 0.265
+  geometry_min_line_length_ratio: 0.10
+  geometry_max_axis_dot: 0.45
+  geometry_endpoint_thickness_ratio: 0.80
+  geometry_min_outside_fraction: 0.55
+  geometry_min_line_contrast: 8.0
+  geometry_canny_low: 20
+  geometry_canny_high: 70
+  geometry_hough_threshold: 12
+  geometry_hough_max_line_gap: 30
+  support_search_margin_px: 220
+  minimum_support_reference_overlap: 0.10
+
+quality:
+  low_confidence: 0.60
+  cache_results: true

@@ -1,0 +1,65 @@
+mode: housing
+
+intrinsics_file: ../../outputs/camera_calibration/intrinsics/intrinsics.yaml
+
+input:
+  type: video
+  paths:
+    - ../../data/calibration/underwater/near.mp4
+    - ../../data/calibration/underwater/middle.mp4
+    - ../../data/calibration/underwater/far.mp4
+  frame_interval_sec: 0.5
+
+target:
+  type: checkerboard
+  inner_corners_cols: 8
+  inner_corners_rows: 6
+  square_size_m: 0.05
+  target_origin: first_inner_corner
+
+housing:
+  type: flat
+  flat:
+    normal_initial: [0.0, 0.0, 1.0]
+    # Replace with the measured entrance-pupil to inner-port distance.
+    camera_to_inner_port_initial_m: null
+  dome:
+    center_in_camera_initial_m: [0.0, 0.0, 0.0]
+    radius_m: null
+  port_material: acrylic
+  port_thickness_m: 0.01
+  refractive_indices:
+    air: 1.0003
+    port: 1.49
+    water: 1.333
+
+optimization:
+  robust_loss: huber
+  f_scale_m: 0.002
+  optimize_air_intrinsics: false
+  optimize_distortion: false
+  optimize_port_thickness: false
+  optimize_dome_radius: false
+  optimize_refractive_indices: false
+  max_iterations: 200
+  validation_fraction: 0.20
+  max_port_tilt_deg: 30
+  max_port_distance_m: 0.5
+  max_mean_error_mm: 20
+
+quality:
+  min_valid_frames: 20
+  max_valid_frames: 60
+  blur_threshold: 80
+  min_board_area_ratio: 0.005
+  duplicate_distance: 0.04
+  require_distance_diversity: true
+  require_tilt_diversity: true
+  require_image_coverage: true
+  min_area_scale_ratio: 1.25
+  min_tilt_score_range: 0.03
+  min_coverage_cells: 5
+
+output:
+  directory: ../../outputs/camera_calibration/housing
+

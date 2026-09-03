@@ -1,0 +1,9 @@
+path: data/yolo_1080p
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: damaged
+  1: exposed_intact
+  2: suspended_intact

@@ -1,0 +1,13 @@
+names:
+  0: damaged
+  1: exposed_intact
+  2: suspended_intact
+
+attributes:
+  position:
+    exposed: [1]
+    suspended: [2]
+    ignored_when_damaged: [0]
+  damage:
+    intact: [1, 2]
+    damaged: [0]

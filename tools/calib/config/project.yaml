@@ -1,0 +1,31 @@
+format_version: "1.0"
+
+project:
+  language: Python
+  operating_system: Ubuntu
+  ros_version: none
+  opencv_version: auto_detect
+
+camera:
+  camera_name: underwater_camera
+  image_source: video
+  image_width: 1920
+  image_height: 1080
+  model: pinhole
+  image_topic: /camera/image_raw
+  fixed_focus: true
+  calibration_environment: underwater
+  enclosure_model: integrated
+
+frames:
+  base_frame: base_link
+  camera_mechanical_frame: camera_link
+  camera_optical_frame: camera_optical_frame
+  target_frame: calibration_target
+
+target:
+  type: checkerboard
+  inner_corners_cols: 11
+  inner_corners_rows: 8
+  square_size_m: 0.04
+  target_origin: first_inner_corner

@@ -1,0 +1,64 @@
+model:
+  weights: ckpts/yoloe/yoloe-v8l-seg.pt
+  device: auto
+  imgsz: 1280
+  confidence: 0.001
+  iou: 0.50
+  max_detections: 100
+  min_mask_overlap: 0.02
+
+sampling:
+  max_frames_per_sample: 3
+
+damage:
+  positive_prompts:
+    - damaged cable
+    - broken cable
+    - cut cable
+    - cable with exposed wires
+    - cable with missing sheath
+    - cable surface defect
+  intact_prompts:
+    - intact cable
+    - undamaged cable
+    - smooth cable surface
+  strong_prompt_score: 0.030
+  weak_prompt_score: 0.012
+  prompt_margin: 0.004
+  frame_score_threshold: 0.48
+  min_positive_frames: 2
+  prompt_weight: 0.82
+  visual_weight: 0.18
+  visual_component_scale: 0.025
+  visual_total_scale: 0.080
+
+position:
+  exposed_prompts:
+    - cable resting on pool floor
+    - cable lying on pool floor
+    - cable touching pool floor
+  suspended_prompts:
+    - suspended cable
+    - hanging cable
+    - cable above pool floor
+  prompt_weight: 0.45
+  area_prior_weight: 0.35
+  contact_rule_weight: 0.20
+  minimum_prompt_total: 0.003
+  suspended_area_midpoint: 0.28
+  suspended_area_scale: 0.06
+  contact:
+    search_below_px: 160
+    contact_threshold_px: 18
+    min_contact_ratio: 0.18
+    min_box_aspect: 1.2
+    min_box_area: 800
+    canny_low: 35
+    canny_high: 110
+    hough_threshold: 35
+    hough_min_line_length: 60
+    hough_max_line_gap: 20
+
+quality:
+  low_confidence: 0.60
+  cache_results: true

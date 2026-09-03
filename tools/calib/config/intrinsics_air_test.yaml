@@ -1,0 +1,43 @@
+mode: intrinsic
+
+input:
+  type: video
+  path: ../outputs/camera_capture/video_20260804_171532_019.mp4
+  frame_interval_sec: 0.5
+
+camera:
+  camera_name: underwater_camera
+  model: pinhole
+  image_width: 2592
+  image_height: 1944
+  fixed_focus: true
+  calibration_environment: air
+
+target:
+  type: checkerboard
+  # The printed board has 12 x 9 squares, hence 11 x 8 inner corners.
+  inner_corners_cols: 11
+  inner_corners_rows: 8
+  square_size_m: 0.04
+  target_origin: first_inner_corner
+
+quality:
+  min_valid_frames: 20
+  max_valid_frames: 60
+  blur_threshold: 80
+  reject_overexposed: true
+  reject_underexposed: true
+  max_overexposed_ratio: 0.20
+  max_underexposed_ratio: 0.20
+  min_board_area_ratio: 0.005
+  # Test capture is nearly static; retain repeated detections for a trial fit.
+  # Use a positive diversity threshold for production calibration captures.
+  duplicate_distance: 0.0
+
+outlier_rejection:
+  max_reprojection_error_px: 1.5
+  mad_factor: 3.5
+  max_rounds: 2
+
+output:
+  directory: ../outputs/calibration/air_intrinsics_20260804_171532

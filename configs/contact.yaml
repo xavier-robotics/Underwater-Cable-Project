@@ -1,0 +1,16 @@
+input: /home/nvidia/DATA/UW/video
+detections: outputs/runtime_opencv/detections.json
+output_dir: outputs/contact
+max_frames: null
+
+contact:
+  search_below_px: 160
+  contact_threshold_px: 18
+  min_contact_ratio: 0.18
+  min_box_aspect: 2.0
+  min_box_area: 800
+  canny_low: 35
+  canny_high: 110
+  hough_threshold: 35
+  hough_min_line_length: 60
+  hough_max_line_gap: 20
