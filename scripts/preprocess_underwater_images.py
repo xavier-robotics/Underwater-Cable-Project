@@ -17,13 +17,13 @@ IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, required=True)
-    parser.add_argument("--out-dir", type=Path, required=True)
-    parser.add_argument("--gain-min", type=float, default=0.75)
-    parser.add_argument("--gain-max", type=float, default=1.35)
-    parser.add_argument("--clahe-clip", type=float, default=1.5)
-    parser.add_argument("--clahe-grid", type=int, default=8)
-    parser.add_argument("--jpeg-quality", type=int, default=96)
+    parser.add_argument("--input_dir", type=Path, default=Path("data/extracted_original_image"))
+    parser.add_argument("--out_dir", type=Path, default=Path("data/processed_images"))
+    parser.add_argument("--gain_min", type=float, default=0.75)
+    parser.add_argument("--gain_max", type=float, default=1.35)
+    parser.add_argument("--clahe_clip", type=float, default=1.5)
+    parser.add_argument("--clahe_grid", type=int, default=8)
+    parser.add_argument("--jpeg_quality", type=int, default=96)
     return parser.parse_args()
 
 
@@ -168,11 +168,11 @@ def main() -> None:
     args = parse_args()
     image_paths = sorted(
         path
-        for path in args.input.iterdir()
+        for path in args.input_dir.rglob("*")
         if path.is_file() and path.suffix.lower() in IMAGE_SUFFIXES
     )
     if not image_paths:
-        raise SystemExit(f"No images found in {args.input}")
+        raise SystemExit(f"No images found in {args.input_dir}")
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     comparisons_dir = args.out_dir / "comparisons"
@@ -191,8 +191,11 @@ def main() -> None:
             clahe_clip=args.clahe_clip,
             clahe_grid=args.clahe_grid,
         )
-        output_path = args.out_dir / input_path.name
-        comparison_path = comparisons_dir / f"{input_path.stem}_comparison.jpg"
+        relative_path = input_path.relative_to(args.input_dir)
+        output_path = args.out_dir / relative_path
+        comparison_path = comparisons_dir / relative_path.parent / f"{input_path.stem}_comparison.jpg"
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        comparison_path.parent.mkdir(parents=True, exist_ok=True)
         preview = comparison_image(original, enhanced, input_path.name)
         output_params = (
             [int(cv2.IMWRITE_JPEG_QUALITY), args.jpeg_quality]
@@ -226,7 +229,7 @@ def main() -> None:
     valid_rows = [row for row in rows if "error" not in row]
     report = {
         "method": "bounded_gray_world_plus_lab_clahe",
-        "input": str(args.input.resolve()),
+        "input": str(args.input_dir.resolve()),
         "output": str(args.out_dir.resolve()),
         "images": len(valid_rows),
         "parameters": {
