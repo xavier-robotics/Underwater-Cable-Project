@@ -38,3 +38,5 @@ secrets.json
 tools/calib/.camera_password
 tools/calib/outputs/
 /video
+/checkpoints
+/history
